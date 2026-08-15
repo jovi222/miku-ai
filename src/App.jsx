@@ -659,7 +659,7 @@ PENTING: Jawablah dengan wajar layaknya manusia yang sedang mengobrol santai. Cu
       </header>
 
       <main className={`canvas-container ${showBackground ? 'garden-room' : ''}`}>
-        <Canvas camera={{ position: [0, 1.2, 3], fov: 40 }}>
+        <Canvas camera={{ position: [0, 1.2, 3], fov: 40 }} dpr={[1, 1.5]}>
           {!showBackground && <color attach="background" args={['#1a1a2e']} />}
           <ambientLight intensity={0.9} />
           <directionalLight position={[2, 5, 2]} intensity={1.5} color="#fff8e7" />
@@ -832,8 +832,8 @@ PENTING: Jawablah dengan wajar layaknya manusia yang sedang mengobrol santai. Cu
                   return (
                     <div key={i} style={{ display:'flex', flexDirection:'column', gap:'4px', background: isActive ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)', border: isActive ? '1px solid rgba(52,211,153,0.3)' : '1px solid transparent', borderRadius:'8px', padding:'8px', transition:'all 0.2s' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-                        <span style={{ flex:1, fontSize:'0.75rem', color: isActive ? '#a7f3d0' : '#ddd', fontFamily:'monospace' }}>
-                          {k.slice(0,10)}...{k.slice(-6)}
+                        <span style={{ flex:1, fontSize:'0.75rem', color: isActive ? '#a7f3d0' : '#ddd', fontFamily:'monospace', wordBreak: 'break-all' }}>
+                          {k}
                         </span>
                         <button
                           onClick={() => { activeKeyIdx.current = i; setApiKeys(prev => [...prev]); }}
