@@ -1,0 +1,440 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #1a1a2e;
+  color: white;
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.header {
+  padding: 20px;
+  text-align: center;
+  background: rgba(26, 26, 46, 0.7);
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 5px;
+}
+
+.header p.header-status {
+  color: #a0c4ff;
+  font-size: 0.82rem;
+  max-width: 90%;
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.9;
+}
+
+.canvas-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  transition: background 0.5s ease;
+}
+
+.canvas-container.garden-room {
+  background-image: url('/bg-garden.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.chat-interface {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 10;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 30px;
+  backdrop-filter: blur(5px);
+}
+
+.input-area input {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  width: 250px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.input-area input::placeholder {
+  color: #888;
+}
+
+.send-button {
+  background: #3a7bd5;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mic-button {
+  background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 210, 255, 0.6);
+}
+
+.mic-button:active {
+  transform: translateY(1px);
+}
+
+.mic-button.listening {
+  background: linear-gradient(45deg, #ff0055, #ff5500);
+  animation: pulse-continuous 1.5s infinite;
+  box-shadow: 0 0 30px rgba(255, 0, 85, 0.7);
+}
+
+@keyframes pulse-continuous {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 85, 0.5); }
+  50% { transform: scale(1.08); box-shadow: 0 0 40px rgba(255, 0, 85, 0.9); }
+  100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 85, 0.5); }
+}
+
+/* ── Sparkle efek klik ──────────────────────────────────── */
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 1.4rem;
+  transform: translate(-50%, -50%);
+  animation: sparkleAnim 0.85s ease-out forwards;
+  z-index: 50;
+  user-select: none;
+}
+
+@keyframes sparkleAnim {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+  40%  { opacity: 1; transform: translate(-50%, -120%) scale(1.3); }
+  100% { opacity: 0; transform: translate(-50%, -200%) scale(0.8); }
+}
+
+/* ── Chat Toggle Button ─────────────────────────────────── */
+.chat-toggle-btn {
+  position: absolute;
+  top: 90px;
+  right: 16px;
+  z-index: 30;
+  background: rgba(236, 72, 153, 0.7);
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.82rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.15s;
+  user-select: none;
+}
+.chat-toggle-btn:hover {
+  background: rgba(236, 72, 153, 0.95);
+  transform: scale(1.05);
+}
+
+/* ── Chat Log ───────────────────────────────────────────── */
+.chat-log {
+  position: absolute;
+  right: 16px;
+  top: 90px;
+  bottom: 140px;
+  width: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  z-index: 20;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.chat-bubble {
+  max-width: 240px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  word-break: break-word;
+  animation: bubblePop 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes bubblePop {
+  from { opacity: 0; transform: scale(0.85) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: rgba(99, 102, 241, 0.75);
+  border-bottom-right-radius: 4px;
+  color: #fff;
+}
+
+.chat-bubble.miku {
+  align-self: flex-start;
+  background: rgba(236, 72, 153, 0.65);
+  border-bottom-left-radius: 4px;
+  color: #fff;
+}
+
+/* ── Settings Menu ──────────────────────────────────────────────── */
+.settings-toggle {
+  position: fixed;
+  bottom: 140px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 50;
+  transition: background 0.2s, transform 0.2s;
+}
+.settings-toggle:hover { 
+  background: rgba(255,255,255,0.25); 
+  transform: rotate(90deg);
+}
+
+.settings-modal {
+  position: fixed;
+  bottom: 195px;
+  right: 18px;
+  width: 260px;
+  background: rgba(20,20,40,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.settings-modal h3 {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 5px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #eee;
+}
+
+/* Toggle Switch CSS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.2);
+  transition: .3s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #ec4899;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* \u2500\u2500 RESPONSIVE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+
+/* Mobile portrait (layar HP kecil, <= 480px) */
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 12px;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+  }
+  .header p.header-status {
+    font-size: 0.72rem;
+  }
+
+  .chat-interface {
+    bottom: 10px;
+    gap: 8px;
+  }
+  .input-area input {
+    width: 180px;
+    font-size: 0.88rem;
+  }
+  .mic-button {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+
+  /* Pengaturan full-width di HP */
+  .settings-modal {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    bottom: 130px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .settings-toggle {
+    bottom: 90px;
+    right: 8px;
+  }
+
+  /* Chat log lebih sempit */
+  .chat-log {
+    right: 8px;
+    width: 220px;
+    bottom: 130px;
+  }
+  .chat-bubble {
+    max-width: 200px;
+    font-size: 0.78rem;
+  }
+  .chat-toggle-btn {
+    right: 8px;
+    top: 80px;
+  }
+}
+
+/* Tablet & HP landscape (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .header {
+    padding: 12px 16px;
+  }
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  .settings-modal {
+    width: 280px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+  .input-area input {
+    width: 220px;
+  }
+  .chat-log {
+    width: 250px;
+  }
+}
+
+/* Desktop lebar (>= 1200px) */
+@media (min-width: 1200px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  .input-area input {
+    width: 340px;
+  }
+  .chat-log {
+    width: 320px;
+  }
+  .settings-modal {
+    width: 300px;
+  }
+}
+
+/* Touch device: tombol lebih besar agar mudah ditekan jari */
+@media (pointer: coarse) {
+  .mic-button {
+    min-height: 52px;
+    font-size: 1rem;
+  }
+  .send-button {
+    min-height: 44px;
+    padding: 10px 18px;
+  }
+  .settings-toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+  }
+}
