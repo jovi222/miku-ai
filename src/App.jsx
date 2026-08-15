@@ -126,7 +126,18 @@ function App() {
   const [apiKeys, setApiKeys] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('miku_api_keys'));
-      return Array.isArray(saved) && saved.length > 0 ? saved : [DEFAULT_KEY];
+      if (Array.isArray(saved) && saved.length > 0) return saved;
+
+      // Ambil dari .env (pisahkan dengan koma jika lebih dari 1 key)
+      const envKeys = import.meta.env.VITE_ELEVENLABS_API_KEYS;
+      if (envKeys) {
+        const keysArray = envKeys.split(',').map(k => k.trim()).filter(Boolean);
+        if (keysArray.length > 0) {
+          localStorage.setItem('miku_api_keys', JSON.stringify(keysArray));
+          return keysArray;
+        }
+      }
+      return [DEFAULT_KEY];
     } catch { return [DEFAULT_KEY]; }
   });
   const [newKeyInput, setNewKeyInput] = useState('');
