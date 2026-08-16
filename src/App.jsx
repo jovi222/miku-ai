@@ -346,11 +346,8 @@ function App() {
     if (sentences.length === 0) return;
 
     const VOICE_ID = 'cgSgspJ2msm6clMCkdW9'; // Jessica
-    // Model terbaik untuk akun free:
-    // - eleven_turbo_v2_5   : cepat & bagus untuk Indonesia
-    // - eleven_multilingual_v2 : kualitas terbaik, aksen Jepang paling natural
-    const MODELS_DEFAULT  = ['eleven_turbo_v2_5', 'eleven_multilingual_v2'];
-    const MODELS_JAPANESE = ['eleven_multilingual_v2', 'eleven_turbo_v2_5'];
+    // Dipatenkan 1 model saja agar suaranya konsisten 100% di semua API Key
+    const MODEL_ID = 'eleven_multilingual_v2';
     const VOICE_SETTINGS = { stability: 0.25, similarity_boost: 0.75, style: 0.5, use_speaker_boost: true };
     const keys = apiKeys.length > 0 ? apiKeys : [DEFAULT_KEY];
 
@@ -360,23 +357,20 @@ function App() {
     // Fungsi fetch 1 kalimat — coba setiap key satu per satu, kalau kredit habis ganti key berikutnya
     const fetchSentence = async (sentenceText) => {
       if (!sentenceText.trim()) return null;
-      // Pilih model terbaik berdasarkan bahasa
-      const MODELS = isJapanese(sentenceText) ? MODELS_JAPANESE : MODELS_DEFAULT;
 
       nextKey: for (let ki = 0; ki < keys.length; ki++) {
         const keyIndex = (activeKeyIdx.current + ki) % keys.length;
         const API_KEY = keys[keyIndex];
 
-        for (const model of MODELS) {
-          try {
-            const response = await fetch(
-              `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?optimize_streaming_latency=3`,
-              {
-                method: 'POST',
-                headers: { 'Accept': 'audio/mpeg', 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: sentenceText, model_id: model, voice_settings: VOICE_SETTINGS })
-              }
-            );
+        try {
+          const response = await fetch(
+            `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?optimize_streaming_latency=3`,
+            {
+              method: 'POST',
+              headers: { 'Accept': 'audio/mpeg', 'xi-api-key': API_KEY, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: sentenceText, model_id: MODEL_ID, voice_settings: VOICE_SETTINGS })
+            }
+          );
 
             // Kredit habis atau rate limit — langsung lompat ke key berikutnya
             if (response.status === 402 || response.status === 429) {
@@ -391,7 +385,6 @@ function App() {
             const arrayBuffer = await response.arrayBuffer();
             return await Tone.getContext().rawContext.decodeAudioData(arrayBuffer);
           } catch (e) { continue; }
-        }
       }
       return null;
     };
