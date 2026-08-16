@@ -822,9 +822,16 @@ ATURAN BAHASA (SANGAT PENTING):
                   return (
                     <div key={i} style={{ display:'flex', flexDirection:'column', gap:'4px', background: isActive ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)', border: isActive ? '1px solid rgba(52,211,153,0.3)' : '1px solid transparent', borderRadius:'8px', padding:'8px', transition:'all 0.2s' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-                        <span style={{ flex:1, fontSize:'0.75rem', color: isActive ? '#a7f3d0' : '#ddd', fontFamily:'monospace', wordBreak: 'break-all' }}>
-                          {k}
+                        <span style={{ flex:1, fontSize:'0.75rem', color: isActive ? '#a7f3d0' : '#ddd', fontFamily:'monospace', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+                          {k.slice(0, 8)}...{k.slice(-6)}
                         </span>
+                        <button 
+                          onClick={() => { navigator.clipboard.writeText(k); alert('API Key berhasil disalin! 🌸'); }} 
+                          style={{ background:'none', border:'none', cursor:'pointer', fontSize:'0.8rem', padding:'0 4px', filter: isActive ? 'none' : 'grayscale(100%) opacity(70%)' }}
+                          title="Copy API Key"
+                        >
+                          📋
+                        </button>
                         <button
                           onClick={() => { activeKeyIdx.current = i; setApiKeys(prev => [...prev]); }}
                           style={{ background: isActive ? 'rgba(52,211,153,0.3)' : 'rgba(255,255,255,0.1)', border:'none', borderRadius:'6px', color: isActive ? '#6ee7b7' : '#ddd', padding:'2px 7px', cursor:'pointer', fontSize:'0.65rem', fontWeight:'bold' }}
