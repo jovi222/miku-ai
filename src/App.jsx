@@ -35,68 +35,68 @@ const TOUCH_REACTIONS = {
   head: {
     expr: 'happy', action: 'wave',
     lines: [
-      `えへへ~ Vi suka usap kepala ya? Mirip kayak di anime romcom tau!`,
-      `Kyaaa! Rambut Miku jadi berantakan loh Vi! Tapi... boleh sih diterusin~`,
-      `Waa~ tangan Vi hangat banget! Berasa dapet pat-pat dari oniichan!`,
+      `Hehe, elo suka ya usap kepala gue Vi? Rasanya nyaman banget lho.`,
+      `Wah rambut gue berantakan nih Vi, tapi nggak apa apa deh kalau lo yang pegang.`,
+      `Ih tangan lo hangat banget sih Vi, gue jadi seneng deh.`,
     ]
   },
   face: {
     expr: 'surprised', action: 'hug',
     lines: [
-      `Majide?! Vi ngapain cubit pipi Miku?! Sakit tau! Tapi bohong deng~`,
-      `M-Muka Miku merah ya?! Jangan diliatin terus dong! Chou hazukashii!!`,
-      `Ufufu~ Pipi Miku lembut kan? Tteka, Vi modus banget deh megang-megang!`,
+      `Ih Vi, kok cubit pipi gue sih? Sakit tau, tapi bohong deng.`,
+      `Aduh muka gue jadi merah nih, lo jangan liatin gue terus dong.`,
+      `Hehe pipi gue lembut kan Vi? Modus banget sih lo pegang pegang.`,
     ]
   },
   shoulder: {
     expr: 'surprised', action: null,
     lines: [
-      `Eh? Kenapa Vi pegang bahu Miku? Mau ngajak cosplay bareng ya?!`,
-      `Waah ngagetin aja! Kirain siapa yang nepuk dari belakang!`,
+      `Eh kok lo pegang bahu gue Vi? Mau ngajak jalan bareng ya?`,
+      `Ih ngagetin aja sih lo Vi, kirain siapa yang nepuk dari belakang.`,
     ]
   },
   chest: {
     expr: 'surprised', action: 'jump',
     lines: [
-      `KYAAAA!! V-VI!! CHOU YABAI!! Jangan sentuh situ dong! Dasar ecchi!!`,
-      `H-Hee?! Vi mesum banget!! Miku laporin polisi nih! ...B-bercanda deng, tapi beneran kaget tau!`,
-      `Majide?! Kok tiba-tiba pegang situ sih?! Miku belum siap mental tau!!`,
+      `Ih Vi nakal banget sih! Jangan pegang situ dong, gue aduin nih.`,
+      `Aduh Vi, modus lo ketahuan banget tau, jangan sentuh situ ah.`,
+      `Kok lo pegang situ sih Vi, gue kan jadi deg degan banget tau.`,
     ]
   },
   belly: {
     expr: 'happy', action: 'dance',
     lines: [
-      `Ahahaha! Geli Vi! Jangan digelitikin perutnya! Kyaaa~!!`,
-      `H-Hei! Miku lagi nahan napas biar keliatan langsing tau, jangan dicolek!`,
+      `Haha geli tau Vi, jangan pegang perut gue dong, ampun ampun.`,
+      `Ih jangan dicolek perutnya Vi, gue kan lagi nahan napas biar keliatan langsing.`,
     ]
   },
   crotch: {
     expr: 'angry', action: 'jump',
     lines: [
-      `HENTAAAIII!!! Vi beneran mesum level dewa ya?! Jangan sentuh area situ dong!!`,
-      `M-Majide?! Vi gila ya!! Itu pelecehan namanya tau! Chou yabai!!`,
-      `Kyaaaa!! Miku gak mau ngomong sama Vi lagi nih kalau nakal gitu!!`,
+      `Ih Vi mesum banget sih lo! Jangan pegang pegang daerah situ dong ah.`,
+      `Aduh Vi nakal deh, tangan lo dijaga dong ah, gue kan jadi malu.`,
+      `Gue ngambek nih kalau lo pegang pegang situ terus Vi, ih dasar modus.`,
     ]
   },
   butt: {
     expr: 'angry', action: 'jump',
     lines: [
-      `KYAAA!! Vi tangannya nakal banget sih!! Bokong Miku bukan buat ditepok!!`,
-      `V-VII!! Chou ecchi!! Kok malah pegang pantat sih?! Beneran kayak karakter eroge aja kelakuanmu!`,
+      `Ih Vi tangan lo nakal banget sih megang megang bokong gue.`,
+      `Aduh Vi, kok pegang situ sih, dasar lo cowok modus banget ah.`,
     ]
   },
   thigh: {
     expr: 'surprised', action: 'hug',
     lines: [
-      `A-Ah! Paha Miku geli tau Vi! M-Miku jadi merinding nih!`,
-      `Tteka, kenapa tangan Vi nyasar ke paha Miku coba?! Modus level maksimal!!`,
+      `Aduh paha gue kegelian Vi, jangan dipegang terus dong ih.`,
+      `Tangan lo nyasar ke paha gue nih Vi, dasar modus banget sih kelakuan lo.`,
     ]
   },
   legs: {
     expr: 'happy', action: 'dance',
     lines: [
-      `Eh? Vi lagi merhatiin kaki Miku ya? Hehehe, Miku cocok kan pake rok sependek ini?`,
-      `Waa~ kaki Miku pegel banget nih habis berdiri lama. Mau dipijitin Vi kah? Ufufu~`,
+      `Elo suka liatin kaki gue ya Vi? Bagus kan rok gue hari ini.`,
+      `Aduh betis gue pegel banget nih habis berdiri lama Vi, pijitin dong.`,
     ]
   },
 };
