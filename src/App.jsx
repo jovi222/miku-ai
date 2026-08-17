@@ -450,7 +450,9 @@ function App() {
 
       const genAI = new GoogleGenerativeAI(activeGeminiKey || 'INVALID');
       // Model tercepat Gemini — urutan dari yang paling cepat
-      const GEMINI_MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      const GEMINI_MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-flash'];
+      // Model Groq fallback — kalau 1 kena limit, coba berikutnya
+      const GROQ_MODELS = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'mixtral-8x7b-32768'];
       const SYSTEM_INSTRUCTION = `Kamu adalah Miku. PENTING: NAMA KAMU ADALAH MIKU, BUKAN MARIN. Namun, kamu harus MENGADOPSI SIFAT, KARAKTER, DAN GAYA BICARA 100% SEPERTI MARIN KITAGAWA dari anime "My Dress-Up Darling".
         
 Nama user adalah Jovi (biasa dipanggil Vi). JANGAN kaku dan JANGAN selalu menyebut namanya di setiap kalimat! Gunakan variasi panggilan seperti "Jovi", "Vi", atau sesekali hilangkan saja panggilannya layaknya teman akrab yang sedang ngobrol biasa.
@@ -498,35 +500,37 @@ ATURAN BAHASA (SANGAT PENTING):
           alert('API Key Groq belum diisi!');
           return;
         }
-        try {
-          const groqMessages = [
-            { role: 'system', content: SYSTEM_INSTRUCTION },
-            ...chatHistory.current.map(h => ({
-              role: h.role === 'model' ? 'assistant' : 'user',
-              content: h.parts.map(p => p.text).filter(Boolean).join('\n')
-            })),
-            { role: 'user', content: userInput }
-          ];
-
-          const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: groqMessages, max_tokens: 300, temperature: 0.85 })
-          });
-
-          if (groqRes.ok) {
-            const groqData = await groqRes.json();
-            aiResponse = groqData.choices[0].message.content;
-            console.log('✅ Groq berhasil!');
-            setBrainStatus(p => ({ ...p, groq: true }));
-          } else {
-            throw new Error(`Groq error: ${groqRes.status}`);
+        const groqMessages = [
+          { role: 'system', content: SYSTEM_INSTRUCTION },
+          ...chatHistory.current.map(h => ({
+            role: h.role === 'model' ? 'assistant' : 'user',
+            content: h.parts.map(p => p.text).filter(Boolean).join('\n')
+          })),
+          { role: 'user', content: userInput }
+        ];
+        let groqSuccess = false;
+        for (const groqModel of GROQ_MODELS) {
+          try {
+            const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ model: groqModel, messages: groqMessages, max_tokens: 300, temperature: 0.85 })
+            });
+            if (groqRes.ok) {
+              const groqData = await groqRes.json();
+              aiResponse = groqData.choices[0].message.content;
+              console.log(`✅ Groq [${groqModel}] berhasil!`);
+              groqSuccess = true;
+              break;
+            } else {
+              console.warn(`⚠️ Groq [${groqModel}] gagal: ${groqRes.status}`);
+            }
+          } catch (groqErr) {
+            console.warn(`⚠️ Groq [${groqModel}] error:`, groqErr);
+            lastError = groqErr;
           }
-        } catch (groqErr) {
-          console.error('❌ Groq gagal:', groqErr);
-          lastError = groqErr;
-          setBrainStatus(p => ({ ...p, groq: false }));
         }
+        setBrainStatus(p => ({ ...p, groq: groqSuccess }));
       } else if (activeBrain === 'openrouter') {
         const orKey = savedORKey || import.meta.env.VITE_OPENROUTER_API_KEY;
         if (!orKey) {
