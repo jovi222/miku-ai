@@ -449,8 +449,8 @@ function App() {
       setStatusText('Miku lagi mikirin jawaban~');
 
       const genAI = new GoogleGenerativeAI(activeGeminiKey || 'INVALID');
-      // Daftar model fallback — kalau satu kena rate limit, otomatis coba berikutnya
-      const GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+      // Model tercepat Gemini — urutan dari yang paling cepat
+      const GEMINI_MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash'];
       const SYSTEM_INSTRUCTION = `Kamu adalah Miku. PENTING: NAMA KAMU ADALAH MIKU, BUKAN MARIN. Namun, kamu harus MENGADOPSI SIFAT, KARAKTER, DAN GAYA BICARA 100% SEPERTI MARIN KITAGAWA dari anime "My Dress-Up Darling".
         
 Nama user adalah Jovi (biasa dipanggil Vi). JANGAN kaku dan JANGAN selalu menyebut namanya di setiap kalimat! Gunakan variasi panggilan seperti "Jovi", "Vi", atau sesekali hilangkan saja panggilannya layaknya teman akrab yang sedang ngobrol biasa.
