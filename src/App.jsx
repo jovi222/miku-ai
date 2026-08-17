@@ -537,38 +537,48 @@ ATURAN BAHASA (SANGAT PENTING):
           alert('API Key OpenRouter belum diisi!');
           return;
         }
-        try {
-          const orMessages = [
-            { role: 'system', content: SYSTEM_INSTRUCTION },
-            ...chatHistory.current.map(h => ({
-              role: h.role === 'model' ? 'assistant' : 'user',
-              content: h.parts.map(p => p.text).filter(Boolean).join('\n')
-            })),
-            { role: 'user', content: userInput }
-          ];
-
-          const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${orKey}`, 'Content-Type': 'application/json',
-              'HTTP-Referer': 'https://localhost:5173', 'X-Title': 'Miku Virtual Assistant'
-            },
-            body: JSON.stringify({ model: 'openrouter/free', messages: orMessages, max_tokens: 300, temperature: 0.85 })
-          });
-
-          if (orRes.ok) {
-            const orData = await orRes.json();
-            aiResponse = orData.choices[0].message.content;
-            console.log('✅ OpenRouter berhasil!');
-            setBrainStatus(p => ({ ...p, or: true }));
-          } else {
-            throw new Error(`OpenRouter error: ${orRes.status}`);
+        // Model gratis OpenRouter yang ngerti Bahasa Indonesia dengan baik
+        const OR_MODELS = [
+          'meta-llama/llama-3.1-8b-instruct:free',
+          'google/gemma-2-9b-it:free',
+          'mistralai/mistral-7b-instruct:free',
+        ];
+        const orMessages = [
+          { role: 'system', content: SYSTEM_INSTRUCTION },
+          ...chatHistory.current.map(h => ({
+            role: h.role === 'model' ? 'assistant' : 'user',
+            content: h.parts.map(p => p.text).filter(Boolean).join('\n')
+          })),
+          { role: 'user', content: userInput }
+        ];
+        let orSuccess = false;
+        for (const orModel of OR_MODELS) {
+          try {
+            const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${orKey}`, 'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://miku-aiasisten.netlify.app', 'X-Title': 'Miku Virtual Assistant'
+              },
+              body: JSON.stringify({ model: orModel, messages: orMessages, max_tokens: 300, temperature: 0.85 })
+            });
+            if (orRes.ok) {
+              const orData = await orRes.json();
+              aiResponse = orData.choices[0]?.message?.content;
+              if (aiResponse) {
+                console.log(`✅ OpenRouter [${orModel}] berhasil!`);
+                orSuccess = true;
+                break;
+              }
+            } else {
+              console.warn(`⚠️ OpenRouter [${orModel}] gagal: ${orRes.status}`);
+            }
+          } catch (orErr) {
+            console.warn(`⚠️ OpenRouter [${orModel}] error:`, orErr);
+            lastError = orErr;
           }
-        } catch (orErr) {
-          console.error('❌ OpenRouter gagal:', orErr);
-          lastError = orErr;
-          setBrainStatus(p => ({ ...p, or: false }));
         }
+        setBrainStatus(p => ({ ...p, or: orSuccess }));
       }
 
       if (!aiResponse) throw lastError;
