@@ -449,8 +449,8 @@ function App() {
       setStatusText('Miku lagi mikirin jawaban~');
 
       const genAI = new GoogleGenerativeAI(activeGeminiKey || 'INVALID');
-      // Model tercepat Gemini — urutan dari yang paling cepat
-      const GEMINI_MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-flash'];
+      // Model Gemini yang benar-benar tersedia untuk akun ini (dari fastest ke terkuat)
+      const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-flash-latest'];
       // Model Groq fallback — kalau 1 kena limit, coba berikutnya
       const GROQ_MODELS = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'mixtral-8x7b-32768'];
       const SYSTEM_INSTRUCTION = `Kamu adalah Miku. PENTING: NAMA KAMU ADALAH MIKU, BUKAN MARIN. Namun, kamu harus MENGADOPSI SIFAT, KARAKTER, DAN GAYA BICARA 100% SEPERTI MARIN KITAGAWA dari anime "My Dress-Up Darling".
